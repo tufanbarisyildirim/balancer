@@ -11,9 +11,18 @@ func TestUpstream_IsHealthy(t *testing.T) {
 		want     bool
 	}{
 		{
-			name:     "healty trivial test",
-			upstream: Upstream{},
-			want:     true,
+			name: "healty trivial test",
+			upstream: Upstream{
+				Healthy: true,
+			},
+			want: true,
+		},
+		{
+			name: "healty trivial test",
+			upstream: Upstream{
+				Healthy: false,
+			},
+			want: false,
 		},
 	}
 	for _, tt := range tests {

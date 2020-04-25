@@ -15,9 +15,6 @@ type Node interface {
 	GetHost() string
 }
 
-//Pool node list
-type Pool []Node
-
 //Upstream is a mocking map between nodes and balancer
 type Upstream struct {
 	Node
@@ -26,11 +23,12 @@ type Upstream struct {
 	RequestCount     uint64
 	TotalRequestTime uint64
 	Host             string
+	Healthy          bool
 }
 
 //IsHealthy returns if a node is healthy or not
 func (u *Upstream) IsHealthy() bool {
-	return true
+	return u.Healthy
 }
 
 //GetLoad returns current load of a node
