@@ -34,7 +34,7 @@ func TestUpstream_GetAverageResponseTime(t *testing.T) {
 			want: time.Duration(100 * time.Nanosecond),
 		},
 		{
-			name: "basic time calc",
+			name: "basic time calc again :)",
 			fields: fields{
 				Node:             nil,
 				Weight:           1,
