@@ -107,6 +107,39 @@ func TestLeastTime_SelectNode(t *testing.T) {
 				TotalRequestTime: uint64(time.Second * 4),
 			},
 		},
+		{
+			name: "return nill cuz we have no healthy one",
+			lt:   &LeastTime{},
+			args: args{
+				balancer: &Balancer{
+					UpstreamPool: []Node{
+						&Upstream{
+							Healthy:          false,
+							Host:             "127.0.0.1",
+							Load:             2,
+							RequestCount:     5000,
+							TotalRequestTime: uint64(time.Second * 5),
+						},
+						&Upstream{
+							Healthy:          false,
+							Host:             "127.0.0.2",
+							Load:             1,
+							RequestCount:     5000,
+							TotalRequestTime: uint64(time.Second * 4),
+						},
+						&Upstream{
+							Healthy:          false,
+							Host:             "127.0.0.3",
+							Load:             0,
+							RequestCount:     5000,
+							TotalRequestTime: 100,
+						},
+					},
+				},
+				clientID: "127.0.0.1",
+			},
+			want: nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

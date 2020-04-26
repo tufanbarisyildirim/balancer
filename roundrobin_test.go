@@ -63,6 +63,10 @@ func TestRoundRobin_SelectNode(t *testing.T) {
 							Healthy: false,
 							Host:    "127.0.0.2",
 						},
+						&Upstream{
+							Healthy: false,
+							Host:    "127.0.0.1",
+						},
 					},
 				},
 			},

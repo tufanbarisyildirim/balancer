@@ -92,6 +92,33 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 				Load:    1,
 			},
 		},
+		{
+			name: "return nil when no healthy node",
+			lc:   &LeastConnection{},
+			args: args{
+				balancer: &Balancer{
+					UpstreamPool: []Node{
+						&Upstream{
+							Healthy: false,
+							Host:    "127.0.0.1",
+							Load:    2,
+						},
+						&Upstream{
+							Healthy: false,
+							Host:    "127.0.0.2",
+							Load:    1,
+						},
+						&Upstream{
+							Healthy: false,
+							Host:    "127.0.0.3",
+							Load:    0,
+						},
+					},
+				},
+				clientID: "127.0.0.1",
+			},
+			want: nil,
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
