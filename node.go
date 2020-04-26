@@ -7,6 +7,6 @@ type Node interface {
 	IsHealthy() bool
 	GetTotalRequest() uint64
 	GetAverageResponseTime() time.Duration
-	GetLoad() int64 
+	GetLoad() int64
 	GetHost() string
 }
