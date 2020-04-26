@@ -1,6 +1,7 @@
 package balancer
 
 import (
+	"fmt"
 	"reflect"
 	"testing"
 	"time"
@@ -357,5 +358,88 @@ func TestBalancer_Next(t *testing.T) {
 				t.Errorf("Balancer.Next() = %v, want5 %v", got, tt.want5)
 			}
 		})
+	}
+}
+
+func genNodes() []Node {
+	nodes := make([]Node, 0)
+	for i := 0; i < 10; i++ {
+		nodes = append(nodes, &Upstream{
+			Weight:           1,
+			Host:             fmt.Sprintf("127.0.0.%d:8080", i),
+			Healthy:          i%2 == 0,
+			RequestCount:     uint64(time.Now().Nanosecond()),
+			TotalRequestTime: uint64(time.Now().Nanosecond() * 300),
+			Load:             int64(time.Now().Second()),
+		})
+	}
+	return nodes
+}
+
+//BenchmarkNextRoundRobin benchmark roundrobin algorithm
+func BenchmarkNextRoundRobin(b *testing.B) {
+
+	balancer := Balancer{
+		UpstreamPool: genNodes(),
+		load:         0,
+		selector:     &RoundRobin{},
+	}
+
+	for n := 0; n < b.N; n++ {
+		upstream := balancer.Next("127.0.0.1").(*Upstream)
+		if n%50 == 0 {
+			upstream.IncreaseLoad()
+		}
+	}
+}
+
+//BenchmarkNextHash consistant hashing
+func BenchmarkNextHash(b *testing.B) {
+
+	balancer := Balancer{
+		UpstreamPool: genNodes(),
+		load:         0,
+		selector:     &Hash{},
+	}
+
+	for n := 0; n < b.N; n++ {
+		upstream := balancer.Next("127.0.0.1").(*Upstream)
+		if n%50 == 0 {
+			upstream.IncreaseLoad()
+		}
+	}
+}
+
+//BenchmarkNextLeastConnection least connection
+func BenchmarkNextLeastConnection(b *testing.B) {
+
+	balancer := Balancer{
+		UpstreamPool: genNodes(),
+		load:         0,
+		selector:     &LeastConnection{},
+	}
+
+	for n := 0; n < b.N; n++ {
+		upstream := balancer.Next("127.0.0.1").(*Upstream)
+		if n%50 == 0 {
+			upstream.IncreaseLoad()
+		}
+	}
+}
+
+//BenchmarkNextLeastTime
+func BenchmarkNextLeastTime(b *testing.B) {
+
+	balancer := Balancer{
+		UpstreamPool: genNodes(),
+		load:         0,
+		selector:     &LeastTime{},
+	}
+
+	for n := 0; n < b.N; n++ {
+		upstream := balancer.Next("127.0.0.1").(*Upstream)
+		if n%5 == 0 {
+			upstream.DoRequest()
+		}
 	}
 }

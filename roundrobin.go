@@ -1,6 +1,8 @@
 package balancer
 
-import "sync/atomic"
+import (
+	"sync/atomic"
+)
 
 //RoundRobin selection
 type RoundRobin struct {
@@ -9,13 +11,14 @@ type RoundRobin struct {
 
 //SelectNode select next node in queue
 func (r *RoundRobin) SelectNode(balancer *Balancer, clientID string) Node {
-	poolSize := uint32(len(balancer.UpstreamPool))
+	poolSize := len(balancer.UpstreamPool)
+	
 	if poolSize == 0 {
 		return nil
 	}
-	for i := uint32(0); i < poolSize; i++ {
+	for i := 0; i < poolSize; i++ {
 		atomic.AddUint32(&r.RequestCount, 1)
-		if upstream := balancer.UpstreamPool[r.RequestCount%poolSize]; upstream.IsHealthy() {
+		if upstream := balancer.UpstreamPool[atomic.LoadUint32(&r.RequestCount)%uint32(poolSize)]; upstream.IsHealthy() {
 			return upstream
 		}
 	}
