@@ -3,6 +3,7 @@ package balancer
 import (
 	"reflect"
 	"testing"
+	"time"
 )
 
 func TestBalancer_Add(t *testing.T) {
@@ -127,6 +128,209 @@ func TestBalancer_Next(t *testing.T) {
 			want5: &Upstream{
 				Healthy: true,
 				Host:    "127.0.0.3",
+			},
+		},
+		{
+			name: "leastconnection next test",
+			fields: fields{
+				UpstreamPool: []Node{
+					&Upstream{
+						Healthy: false,
+						Host:    "127.0.0.1",
+						Load:    0,
+					},
+					&Upstream{
+						Healthy: true,
+						Host:    "127.0.0.2",
+						Load:    1,
+					},
+					&Upstream{
+						Healthy: true,
+						Host:    "127.0.0.3",
+						Load:    2,
+					},
+					&Upstream{
+						Healthy: true,
+						Host:    "127.0.0.4",
+						Load:    3,
+					},
+				},
+				load:     0,
+				selector: Selector(&LeastConnection{}),
+			},
+			want1: &Upstream{
+				Healthy: true,
+				Host:    "127.0.0.2",
+				Load:    1,
+			},
+			want2: &Upstream{
+				Healthy: true,
+				Host:    "127.0.0.2",
+				Load:    1,
+			},
+			want3: &Upstream{
+				Healthy: true,
+				Host:    "127.0.0.2",
+				Load:    1,
+			},
+			want4: &Upstream{
+				Healthy: true,
+				Host:    "127.0.0.2",
+				Load:    1,
+			},
+			want5: &Upstream{
+				Healthy: true,
+				Host:    "127.0.0.2",
+				Load:    1,
+			},
+		},
+		{
+			name: "leasttimeconnection next test",
+			fields: fields{
+				UpstreamPool: []Node{
+					&Upstream{
+						Healthy: false,
+						Host:    "127.0.0.1",
+						Load:    0,
+					},
+					&Upstream{
+						Healthy:          true,
+						Host:             "127.0.0.2",
+						Load:             1,
+						RequestCount:     5000,
+						TotalRequestTime: uint64(time.Second * 10),
+					},
+					&Upstream{
+						Healthy:          true,
+						Host:             "127.0.0.3",
+						Load:             2,
+						RequestCount:     5000,
+						TotalRequestTime: uint64(time.Second * 10),
+					},
+					&Upstream{
+						Healthy:          true,
+						Host:             "127.0.0.4",
+						Load:             3,
+						RequestCount:     5000,
+						TotalRequestTime: uint64(time.Second * 5),
+					},
+				},
+				load:     0,
+				selector: Selector(&LeastTime{}),
+			},
+			want1: &Upstream{
+				Healthy:          true,
+				Host:             "127.0.0.4",
+				Load:             3,
+				RequestCount:     5000,
+				TotalRequestTime: uint64(time.Second * 5),
+			},
+			want2: &Upstream{
+				Healthy:          true,
+				Host:             "127.0.0.4",
+				Load:             3,
+				RequestCount:     5000,
+				TotalRequestTime: uint64(time.Second * 5),
+			},
+			want3: &Upstream{
+				Healthy:          true,
+				Host:             "127.0.0.4",
+				Load:             3,
+				RequestCount:     5000,
+				TotalRequestTime: uint64(time.Second * 5),
+			},
+			want4: &Upstream{
+				Healthy:          true,
+				Host:             "127.0.0.4",
+				Load:             3,
+				RequestCount:     5000,
+				TotalRequestTime: uint64(time.Second * 5),
+			},
+			want5: &Upstream{
+				Healthy:          true,
+				Host:             "127.0.0.4",
+				Load:             3,
+				RequestCount:     5000,
+				TotalRequestTime: uint64(time.Second * 5),
+			},
+		},
+		{
+			name: "hash next test",
+			fields: fields{
+				UpstreamPool: []Node{
+					&Upstream{
+						Healthy:          true,
+						Host:             "127.0.0.4",
+						Load:             3,
+						RequestCount:     5000,
+						TotalRequestTime: uint64(time.Second * 5),
+					},
+					&Upstream{
+						Healthy:          true,
+						Host:             "127.0.0.3",
+						Load:             2,
+						RequestCount:     5000,
+						TotalRequestTime: uint64(time.Second * 10),
+					},
+					&Upstream{
+						Healthy:          false,
+						Host:             "127.0.0.1",
+						Load:             0,
+						RequestCount:     5000,
+						TotalRequestTime: uint64(time.Second * 10),
+					},
+					&Upstream{
+						Healthy:          true,
+						Host:             "127.0.0.2",
+						Load:             1,
+						RequestCount:     5000,
+						TotalRequestTime: uint64(time.Second * 10),
+					},
+					&Upstream{
+						Healthy:          true,
+						Host:             "127.0.0.4",
+						Load:             3,
+						RequestCount:     5000,
+						TotalRequestTime: uint64(time.Second * 5),
+					},
+				},
+				load:     0,
+				selector: Selector(&Hash{}),
+			},
+			want1: &Upstream{
+				Healthy:          true,
+				Host:             "127.0.0.4",
+				Load:             3,
+				RequestCount:     5000,
+				TotalRequestTime: uint64(time.Second * 5),
+			},
+			want2: &Upstream{
+				Healthy:          true,
+				Host:             "127.0.0.4",
+				Load:             3,
+				RequestCount:     5000,
+				TotalRequestTime: uint64(time.Second * 5),
+			},
+			want3: &Upstream{
+				Healthy:          true,
+				Host:             "127.0.0.4",
+				Load:             3,
+				RequestCount:     5000,
+				TotalRequestTime: uint64(time.Second * 5),
+			},
+			want4: &Upstream{
+				Healthy:          true,
+				Host:             "127.0.0.4",
+				Load:             3,
+				RequestCount:     5000,
+				TotalRequestTime: uint64(time.Second * 5),
+			},
+			want5: &Upstream{
+				Healthy:          true,
+				Host:             "127.0.0.4",
+				Load:             3,
+				RequestCount:     5000,
+				TotalRequestTime: uint64(time.Second * 5),
 			},
 		},
 	}
