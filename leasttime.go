@@ -1,3 +1,4 @@
 package balancer
 
-//TODO(tufan): select a node with fastest response time
+//LeastTime select a node with fastest response time
+type LeastTime struct{}

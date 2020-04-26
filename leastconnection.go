@@ -1,3 +1,4 @@
 package balancer
 
-//select a node with lower load
+//LeastConnection select a node with lower load
+type LeastConnection struct{}
