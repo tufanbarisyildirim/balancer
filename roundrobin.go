@@ -7,7 +7,7 @@ type RoundRobin struct {
 	RequestCount uint32
 }
 
-//SelectNode select a node based on hash
+//SelectNode select next node in queue
 func (r *RoundRobin) SelectNode(balancer *Balancer, clientID string) Node {
 	poolSize := uint32(len(balancer.UpstreamPool))
 	if poolSize == 0 {
