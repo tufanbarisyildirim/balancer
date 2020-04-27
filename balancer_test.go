@@ -3,6 +3,7 @@ package balancer
 import (
 	"fmt"
 	"reflect"
+	"sync"
 	"testing"
 	"time"
 )
@@ -28,7 +29,7 @@ func TestBalancer_Add(t *testing.T) {
 				UpstreamPool: []Node{
 					&Upstream{
 						healthy: true,
-						nodeID:    "127.0.0.1:8000",
+						nodeID:  "127.0.0.1:8000",
 					},
 				},
 			},
@@ -40,11 +41,11 @@ func TestBalancer_Add(t *testing.T) {
 				UpstreamPool: []Node{
 					&Upstream{
 						healthy: true,
-						nodeID:    "127.0.0.1:8000",
+						nodeID:  "127.0.0.1:8000",
 					},
 					&Upstream{
 						healthy: true,
-						nodeID:    "127.0.0.2:8000",
+						nodeID:  "127.0.0.2:8000",
 					},
 				},
 			},
@@ -53,11 +54,11 @@ func TestBalancer_Add(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			b := &Balancer{
-				UpstreamPool: tt.fields.UpstreamPool,
-				load:         tt.fields.load,
-				Policy:       tt.fields.selector,
-			}
+			b := NewBalancer()
+			b.UpstreamPool = tt.fields.UpstreamPool
+			b.load = tt.fields.load
+			b.Policy = tt.fields.selector
+
 			b.Add(tt.args.node...)
 
 			if got := len(b.UpstreamPool); got != tt.want {
@@ -92,19 +93,19 @@ func TestBalancer_Next(t *testing.T) {
 				UpstreamPool: []Node{
 					&Upstream{
 						healthy: false,
-						nodeID:    "127.0.0.1",
+						nodeID:  "127.0.0.1",
 					},
 					&Upstream{
 						healthy: true,
-						nodeID:    "127.0.0.2",
+						nodeID:  "127.0.0.2",
 					},
 					&Upstream{
 						healthy: true,
-						nodeID:    "127.0.0.3",
+						nodeID:  "127.0.0.3",
 					},
 					&Upstream{
 						healthy: true,
-						nodeID:    "127.0.0.4",
+						nodeID:  "127.0.0.4",
 					},
 				},
 				load:     0,
@@ -112,23 +113,23 @@ func TestBalancer_Next(t *testing.T) {
 			},
 			want1: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.2",
+				nodeID:  "127.0.0.2",
 			},
 			want2: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.3",
+				nodeID:  "127.0.0.3",
 			},
 			want3: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.4",
+				nodeID:  "127.0.0.4",
 			},
 			want4: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.2",
+				nodeID:  "127.0.0.2",
 			},
 			want5: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.3",
+				nodeID:  "127.0.0.3",
 			},
 		},
 		{
@@ -137,22 +138,22 @@ func TestBalancer_Next(t *testing.T) {
 				UpstreamPool: []Node{
 					&Upstream{
 						healthy: false,
-						nodeID:    "127.0.0.1",
+						nodeID:  "127.0.0.1",
 						load:    0,
 					},
 					&Upstream{
 						healthy: true,
-						nodeID:    "127.0.0.2",
+						nodeID:  "127.0.0.2",
 						load:    1,
 					},
 					&Upstream{
 						healthy: true,
-						nodeID:    "127.0.0.3",
+						nodeID:  "127.0.0.3",
 						load:    2,
 					},
 					&Upstream{
 						healthy: true,
-						nodeID:    "127.0.0.4",
+						nodeID:  "127.0.0.4",
 						load:    3,
 					},
 				},
@@ -161,27 +162,27 @@ func TestBalancer_Next(t *testing.T) {
 			},
 			want1: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.2",
+				nodeID:  "127.0.0.2",
 				load:    1,
 			},
 			want2: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.2",
+				nodeID:  "127.0.0.2",
 				load:    1,
 			},
 			want3: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.2",
+				nodeID:  "127.0.0.2",
 				load:    1,
 			},
 			want4: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.2",
+				nodeID:  "127.0.0.2",
 				load:    1,
 			},
 			want5: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.2",
+				nodeID:  "127.0.0.2",
 				load:    1,
 			},
 		},
@@ -191,26 +192,26 @@ func TestBalancer_Next(t *testing.T) {
 				UpstreamPool: []Node{
 					&Upstream{
 						healthy: false,
-						nodeID:    "127.0.0.1",
+						nodeID:  "127.0.0.1",
 						load:    0,
 					},
 					&Upstream{
 						healthy:          true,
-						nodeID:             "127.0.0.2",
+						nodeID:           "127.0.0.2",
 						load:             1,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 10),
 					},
 					&Upstream{
 						healthy:          true,
-						nodeID:             "127.0.0.3",
+						nodeID:           "127.0.0.3",
 						load:             2,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 10),
 					},
 					&Upstream{
 						healthy:          true,
-						nodeID:             "127.0.0.4",
+						nodeID:           "127.0.0.4",
 						load:             3,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 5),
@@ -221,35 +222,35 @@ func TestBalancer_Next(t *testing.T) {
 			},
 			want1: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.4",
+				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
 			want2: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.4",
+				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
 			want3: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.4",
+				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
 			want4: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.4",
+				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
 			want5: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.4",
+				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
@@ -261,35 +262,35 @@ func TestBalancer_Next(t *testing.T) {
 				UpstreamPool: []Node{
 					&Upstream{
 						healthy:          true,
-						nodeID:             "127.0.0.4",
+						nodeID:           "127.0.0.4",
 						load:             3,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 5),
 					},
 					&Upstream{
 						healthy:          true,
-						nodeID:             "127.0.0.3",
+						nodeID:           "127.0.0.3",
 						load:             2,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 10),
 					},
 					&Upstream{
 						healthy:          false,
-						nodeID:             "127.0.0.1",
+						nodeID:           "127.0.0.1",
 						load:             0,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 10),
 					},
 					&Upstream{
 						healthy:          true,
-						nodeID:             "127.0.0.2",
+						nodeID:           "127.0.0.2",
 						load:             1,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 10),
 					},
 					&Upstream{
 						healthy:          true,
-						nodeID:             "127.0.0.4",
+						nodeID:           "127.0.0.4",
 						load:             3,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 5),
@@ -300,35 +301,35 @@ func TestBalancer_Next(t *testing.T) {
 			},
 			want1: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.4",
+				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
 			want2: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.4",
+				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
 			want3: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.4",
+				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
 			want4: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.4",
+				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
 			want5: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.4",
+				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
@@ -337,11 +338,12 @@ func TestBalancer_Next(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			b := &Balancer{
-				UpstreamPool: tt.fields.UpstreamPool,
-				load:         tt.fields.load,
-				Policy:       tt.fields.selector,
-			}
+			b := NewBalancer()
+
+			b.UpstreamPool = tt.fields.UpstreamPool
+			b.load = tt.fields.load
+			b.Policy = tt.fields.selector
+
 			if got := b.Next(tt.args.clientID); !reflect.DeepEqual(got, tt.want1) {
 				t.Errorf("Balancer.Next() = %v, want1 %v", got, tt.want1)
 			}
@@ -366,7 +368,7 @@ func genNodes() []Node {
 	for i := 0; i < 10; i++ {
 		nodes = append(nodes, &Upstream{
 			Weight:           1,
-			nodeID:             fmt.Sprintf("127.0.0.%d:8080", i),
+			nodeID:           fmt.Sprintf("127.0.0.%d:8080", i),
 			healthy:          i%2 == 0,
 			requestCount:     uint64(time.Now().Nanosecond()),
 			totalRequestTime: uint64(time.Now().Nanosecond() * 300),
@@ -383,6 +385,7 @@ func BenchmarkNextRoundRobin(b *testing.B) {
 		UpstreamPool: genNodes(),
 		load:         0,
 		Policy:       &RoundRobin{},
+		m: &sync.RWMutex{},
 	}
 
 	for n := 0; n < b.N; n++ {
@@ -400,6 +403,7 @@ func BenchmarkNextHash(b *testing.B) {
 		UpstreamPool: genNodes(),
 		load:         0,
 		Policy:       &Hash{},
+		m: &sync.RWMutex{},
 	}
 
 	for n := 0; n < b.N; n++ {
@@ -417,6 +421,7 @@ func BenchmarkNextLeastConnection(b *testing.B) {
 		UpstreamPool: genNodes(),
 		load:         0,
 		Policy:       &LeastConnection{},
+		m: &sync.RWMutex{},
 	}
 
 	for n := 0; n < b.N; n++ {
@@ -434,6 +439,7 @@ func BenchmarkNextLeastTime(b *testing.B) {
 		UpstreamPool: genNodes(),
 		load:         0,
 		Policy:       &LeastTime{},
+		m: &sync.RWMutex{},
 	}
 
 	for n := 0; n < b.N; n++ {
@@ -441,5 +447,66 @@ func BenchmarkNextLeastTime(b *testing.B) {
 		if n%5 == 0 {
 			upstream.IncreaseTime()
 		}
+	}
+}
+
+func TestBalancer_Remove(t *testing.T) {
+	type fields struct {
+		UpstreamPool []Node
+		load         uint64
+		Policy       SelectionPolicy
+		m            *sync.RWMutex
+	}
+	type args struct {
+		nodeID string
+	}
+	tests := []struct {
+		name      string
+		fields    fields
+		args      args
+		wantCount int
+	}{
+		{
+			name: "remove one",
+			fields: fields{
+				UpstreamPool: []Node{
+					&Upstream{nodeID: "1"},
+					&Upstream{nodeID: "2"},
+				},
+				m: &sync.RWMutex{},
+			},
+			args: args{
+				nodeID: "1",
+			},
+			wantCount: 1,
+		},
+		{
+			name: "remove one",
+			fields: fields{
+				UpstreamPool: []Node{
+					&Upstream{nodeID: "1"},
+					&Upstream{nodeID: "2"},
+					&Upstream{nodeID: "3"},
+				},
+				m: &sync.RWMutex{},
+			},
+			args: args{
+				nodeID: "2",
+			},
+			wantCount: 2,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			b := &Balancer{
+				UpstreamPool: tt.fields.UpstreamPool,
+				load:         tt.fields.load,
+				Policy:       tt.fields.Policy,
+				m:            tt.fields.m,
+			}
+			if b.Remove(tt.args.nodeID); len(b.UpstreamPool) != tt.wantCount {
+				t.Errorf("len(b.UpstreamPool) = %v, want5 %v", len(b.UpstreamPool), tt.wantCount)
+			}
+		})
 	}
 }
