@@ -12,7 +12,7 @@ type Upstream struct {
 	load             int64
 	requestCount     uint64
 	totalRequestTime uint64
-	nodeID             string
+	nodeID           string
 	healthy          bool
 }
 
@@ -68,5 +68,8 @@ func (u *Upstream) TotalRequest() uint64 {
 //AverageResponseTime get overall average response time
 //TODO(tufan): change it to get average in last x min?
 func (u *Upstream) AverageResponseTime() time.Duration {
+	if u.TotalRequest() == 0 {
+		return 0
+	}
 	return time.Duration(u.TotalRequestTime() / u.TotalRequest())
 }
