@@ -50,6 +50,11 @@ func (u *Upstream) DoRequest() {
 	atomic.AddUint64(&u.TotalRequestTime, uint64(time.Since(start)))
 }
 
+//IncreaseTime increase time for test
+func (u *Upstream) IncreaseTime() {
+	atomic.AddUint64(&u.TotalRequestTime, uint64(time.Second*10))
+}
+
 //GetTotalRequestTime get sum of all request
 func (u *Upstream) GetTotalRequestTime() uint64 {
 	return atomic.LoadUint64(&u.TotalRequestTime)

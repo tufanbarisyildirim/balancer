@@ -439,7 +439,7 @@ func BenchmarkNextLeastTime(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		upstream := balancer.Next("127.0.0.1").(*Upstream)
 		if n%5 == 0 {
-			upstream.DoRequest()
+			upstream.IncreaseTime()
 		}
 	}
 }
