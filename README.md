@@ -63,10 +63,10 @@ go test -bench=.
 goos: darwin
 goarch: amd64
 pkg: github.com/tufanbarisyildirim/balancer
-BenchmarkNextRoundRobin-16              16095052                69.5 ns/op
-BenchmarkNextHash-16                     7556725               156 ns/op
-BenchmarkNextLeastConnection-16         18903901                59.1 ns/op
-BenchmarkNextLeastTime-16               11128424                99.7 ns/op
+BenchmarkNextRoundRobin-16              19563128                52.9 ns/op
+BenchmarkNextHash-16                     7687058               157 ns/op
+BenchmarkNextLeastConnection-16         20467452                59.1 ns/op
+BenchmarkNextLeastTime-16               11478096                97.7 ns/op
 PASS
 ok      github.com/tufanbarisyildirim/balancer  5.009s
 ```
