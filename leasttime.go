@@ -5,6 +5,10 @@ type LeastTime struct{}
 
 //SelectNode select next node has least response time in queue
 func (lt *LeastTime) SelectNode(balancer *Balancer, clientID string) Node {
+	if len(balancer.UpstreamPool) == 0 {
+		return nil
+	}
+
 	var selectedNode Node
 
 	for _, upstream := range balancer.UpstreamPool {
@@ -12,10 +16,15 @@ func (lt *LeastTime) SelectNode(balancer *Balancer, clientID string) Node {
 			continue
 		}
 
-		if selectedNode == nil || selectedNode.AverageResponseTime() > upstream.AverageResponseTime() {
+		if selectedNode == nil {
 			selectedNode = upstream
 			continue
 		}
+
+		if selectedNode.AverageResponseTime() > upstream.AverageResponseTime() {
+			selectedNode = upstream
+		}
 	}
+
 	return selectedNode
 }

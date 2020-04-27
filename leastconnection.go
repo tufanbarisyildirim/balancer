@@ -5,6 +5,10 @@ type LeastConnection struct{}
 
 //SelectNode select next node in queue
 func (lc *LeastConnection) SelectNode(balancer *Balancer, clientID string) Node {
+	if len(balancer.UpstreamPool) == 0 {
+		return nil
+	}
+
 	var selectedNode Node
 
 	for _, upstream := range balancer.UpstreamPool {
@@ -14,7 +18,6 @@ func (lc *LeastConnection) SelectNode(balancer *Balancer, clientID string) Node 
 
 		if selectedNode == nil || selectedNode.Load() > upstream.Load() {
 			selectedNode = upstream
-			continue
 		}
 	}
 	return selectedNode
