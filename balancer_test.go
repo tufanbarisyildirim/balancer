@@ -257,6 +257,32 @@ func TestBalancer_Next(t *testing.T) {
 			},
 		},
 		{
+			name: "leastconnection empty pool test",
+			fields: fields{
+				UpstreamPool: []Node{},
+				load:         0,
+				selector:     SelectionPolicy(&LeastConnection{}),
+			},
+			want1: nil,
+			want2: nil,
+			want3: nil,
+			want4: nil,
+			want5: nil,
+		},
+		{
+			name: "leasttimeconnection empty pool test",
+			fields: fields{
+				UpstreamPool: []Node{},
+				load:         0,
+				selector:     SelectionPolicy(&LeastTime{}),
+			},
+			want1: nil,
+			want2: nil,
+			want3: nil,
+			want4: nil,
+			want5: nil,
+		},
+		{
 			name: "hash next test",
 			fields: fields{
 				UpstreamPool: []Node{
@@ -268,7 +294,7 @@ func TestBalancer_Next(t *testing.T) {
 						totalRequestTime: uint64(time.Second * 5),
 					},
 					&Upstream{
-						healthy:          true,
+						healthy:          false,
 						nodeID:           "127.0.0.3",
 						load:             2,
 						requestCount:     5000,
@@ -385,7 +411,7 @@ func BenchmarkNextRoundRobin(b *testing.B) {
 		UpstreamPool: genNodes(),
 		load:         0,
 		Policy:       &RoundRobin{},
-		m: &sync.RWMutex{},
+		m:            &sync.RWMutex{},
 	}
 
 	for n := 0; n < b.N; n++ {
@@ -403,7 +429,7 @@ func BenchmarkNextHash(b *testing.B) {
 		UpstreamPool: genNodes(),
 		load:         0,
 		Policy:       &Hash{},
-		m: &sync.RWMutex{},
+		m:            &sync.RWMutex{},
 	}
 
 	for n := 0; n < b.N; n++ {
@@ -421,7 +447,7 @@ func BenchmarkNextLeastConnection(b *testing.B) {
 		UpstreamPool: genNodes(),
 		load:         0,
 		Policy:       &LeastConnection{},
-		m: &sync.RWMutex{},
+		m:            &sync.RWMutex{},
 	}
 
 	for n := 0; n < b.N; n++ {
@@ -439,7 +465,7 @@ func BenchmarkNextLeastTime(b *testing.B) {
 		UpstreamPool: genNodes(),
 		load:         0,
 		Policy:       &LeastTime{},
-		m: &sync.RWMutex{},
+		m:            &sync.RWMutex{},
 	}
 
 	for n := 0; n < b.N; n++ {
