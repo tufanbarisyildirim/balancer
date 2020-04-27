@@ -20,10 +20,10 @@ type Balancer struct {
 
 Selector is one of selection policies:
 
-- RoundRobin
-- Hash
-- LeastConnection
-- LeastTime
+- [RoundRobin](roundrobin.go) - selects next available upstream on every request
+- [Hash](hash.go) - matches client using consistant hashing by its own id (any string like ip address or user id)
+- [LeastConnection](leastconnection.go) - selects the node that has lowest active connection (using Node.GetLoad)
+- [LeastTime](leasttime.go) - selects the node that has lowest response time (using Node.GetAverageResponseTime)
 
 Any type of object that satisfies Node Interface will work as node
 
