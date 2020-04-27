@@ -1,6 +1,6 @@
 package balancer
 
 //Selector Interface, policy to decide target
-type Selector interface {
+type SelectionPolicy interface {
 	SelectNode(balancer *Balancer, clientID string) Node
 }

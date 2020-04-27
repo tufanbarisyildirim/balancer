@@ -11,7 +11,7 @@ func TestBalancer_Add(t *testing.T) {
 	type fields struct {
 		UpstreamPool []Node
 		load         uint64
-		selector     Selector
+		selector     SelectionPolicy
 	}
 	type args struct {
 		node []Node
@@ -56,7 +56,7 @@ func TestBalancer_Add(t *testing.T) {
 			b := &Balancer{
 				UpstreamPool: tt.fields.UpstreamPool,
 				load:         tt.fields.load,
-				selector:     tt.fields.selector,
+				Policy:     tt.fields.selector,
 			}
 			b.Add(tt.args.node...)
 
@@ -71,7 +71,7 @@ func TestBalancer_Next(t *testing.T) {
 	type fields struct {
 		UpstreamPool []Node
 		load         uint64
-		selector     Selector
+		selector     SelectionPolicy
 	}
 	type args struct {
 		clientID string
@@ -108,7 +108,7 @@ func TestBalancer_Next(t *testing.T) {
 					},
 				},
 				load:     0,
-				selector: Selector(&RoundRobin{}),
+				selector: SelectionPolicy(&RoundRobin{}),
 			},
 			want1: &Upstream{
 				Healthy: true,
@@ -157,7 +157,7 @@ func TestBalancer_Next(t *testing.T) {
 					},
 				},
 				load:     0,
-				selector: Selector(&LeastConnection{}),
+				selector: SelectionPolicy(&LeastConnection{}),
 			},
 			want1: &Upstream{
 				Healthy: true,
@@ -217,7 +217,7 @@ func TestBalancer_Next(t *testing.T) {
 					},
 				},
 				load:     0,
-				selector: Selector(&LeastTime{}),
+				selector: SelectionPolicy(&LeastTime{}),
 			},
 			want1: &Upstream{
 				Healthy:          true,
@@ -296,7 +296,7 @@ func TestBalancer_Next(t *testing.T) {
 					},
 				},
 				load:     0,
-				selector: Selector(&Hash{}),
+				selector: SelectionPolicy(&Hash{}),
 			},
 			want1: &Upstream{
 				Healthy:          true,
@@ -340,7 +340,7 @@ func TestBalancer_Next(t *testing.T) {
 			b := &Balancer{
 				UpstreamPool: tt.fields.UpstreamPool,
 				load:         tt.fields.load,
-				selector:     tt.fields.selector,
+				Policy:     tt.fields.selector,
 			}
 			if got := b.Next(tt.args.clientID); !reflect.DeepEqual(got, tt.want1) {
 				t.Errorf("Balancer.Next() = %v, want1 %v", got, tt.want1)
@@ -382,7 +382,7 @@ func BenchmarkNextRoundRobin(b *testing.B) {
 	balancer := Balancer{
 		UpstreamPool: genNodes(),
 		load:         0,
-		selector:     &RoundRobin{},
+		Policy:     &RoundRobin{},
 	}
 
 	for n := 0; n < b.N; n++ {
@@ -399,7 +399,7 @@ func BenchmarkNextHash(b *testing.B) {
 	balancer := Balancer{
 		UpstreamPool: genNodes(),
 		load:         0,
-		selector:     &Hash{},
+		Policy:     &Hash{},
 	}
 
 	for n := 0; n < b.N; n++ {
@@ -416,7 +416,7 @@ func BenchmarkNextLeastConnection(b *testing.B) {
 	balancer := Balancer{
 		UpstreamPool: genNodes(),
 		load:         0,
-		selector:     &LeastConnection{},
+		Policy:     &LeastConnection{},
 	}
 
 	for n := 0; n < b.N; n++ {
@@ -433,7 +433,7 @@ func BenchmarkNextLeastTime(b *testing.B) {
 	balancer := Balancer{
 		UpstreamPool: genNodes(),
 		load:         0,
-		selector:     &LeastTime{},
+		Policy:     &LeastTime{},
 	}
 
 	for n := 0; n < b.N; n++ {

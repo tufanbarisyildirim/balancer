@@ -4,7 +4,7 @@ package balancer
 type Balancer struct {
 	UpstreamPool []Node
 	load         uint64
-	selector     Selector
+	Policy       SelectionPolicy
 }
 
 //Add add a node to balancer
@@ -14,5 +14,5 @@ func (b *Balancer) Add(node ...Node) {
 
 //Next select next available node
 func (b *Balancer) Next(clientID string) Node {
-	return b.selector.SelectNode(b, clientID)
+	return b.Policy.SelectNode(b, clientID)
 }

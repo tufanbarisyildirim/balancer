@@ -5,6 +5,56 @@ Balancer helps you to balance jobs/requests/messages between workers.  It is wel
 
 *Balancer is not a reverse proxy, it is a router so you balance things between any type of UpstreamPool.
 
+
+### API 
+The interface of balancer is as simple as,
+
+```go
+//Balancer select a node to send load
+type Balancer struct {
+   Policy  SelectionPolicy 
+   func Add(node ...Node) {}
+   func Next(clientID string) Node {}
+}
+```
+
+Selector is one of selection policies:
+
+- RoundRobin
+- Hash
+- LeastConnection
+- LeastTime
+
+Any type of object that satisfies Node Interface will work as node
+
+```go
+type Node interface {
+	IsHealthy() bool
+	GetTotalRequest() uint64
+	GetAverageResponseTime() time.Duration
+	GetLoad() int64
+	GetHost() string
+}
+```
+
+
+You decide the selection policy on init like;
+```go
+package main 
+
+balancer := Balancer{
+    Policy:     &RoundRobin{},
+}
+```
+
+Add nodes and balancer machine will decide the next upstream based on the policy
+
+```go
+balancer.Add(&Upstream{ Host:"worker-1" })
+selectednode := balancer.Next("client-1")
+```
+
+### Benchmark
 ```
 -- 2,3 GHz 8-Core Intel Core i9
 
@@ -22,8 +72,8 @@ ok      github.com/tufanbarisyildirim/balancer  5.009s
 ```
 
 Those results are for 10 upstreams where half of them are down but still in pool. (see balancer_test.go for details)
-I tired to keep mocking as a real example as possible (Increasing current load, load times and heep half down always). So those results are worst case of finding the best upstream in pool.
+I tired to keep mocking as a real example as possible (Increasing current load, load times and kep half of them down all the time). So those results are worst case of finding the best upstream in pool.
 
 
-### API Details
-Coming soon.
+### [Contributing](CONTRIBUTING)
+### [License](LICENSE)
