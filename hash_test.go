@@ -23,15 +23,15 @@ func TestHash_SelectNode(t *testing.T) {
 				balancer: &Balancer{
 					UpstreamPool: []Node{
 						&Upstream{
-							Host:    "127.0.0.1",
-							Healthy: true,
+							nodeID:    "127.0.0.1",
+							healthy: true,
 						},
 					},
 				},
 			},
 			want: &Upstream{
-				Host:    "127.0.0.1",
-				Healthy: true,
+				nodeID:    "127.0.0.1",
+				healthy: true,
 			},
 		},
 		{
@@ -51,7 +51,7 @@ func TestHash_SelectNode(t *testing.T) {
 				balancer: &Balancer{
 					UpstreamPool: []Node{
 						&Upstream{
-							Healthy: false,
+							healthy: false,
 						},
 					},
 				},

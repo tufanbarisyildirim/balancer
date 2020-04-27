@@ -5,11 +5,11 @@ import (
 	"time"
 )
 
-func TestUpstream_GetAverageResponseTime(t *testing.T) {
+func TestUpstream_AverageResponseTime(t *testing.T) {
 	type fields struct {
 		Node             Node
 		Weight           int
-		Load             int64
+		load             int64
 		RequestCount     uint64
 		TotalRequestTime uint64
 		Host             string
@@ -25,7 +25,7 @@ func TestUpstream_GetAverageResponseTime(t *testing.T) {
 			fields: fields{
 				Node:             nil,
 				Weight:           1,
-				Load:             0,
+				load:             0,
 				RequestCount:     100,
 				TotalRequestTime: 100 * 100,
 				Healthy:          true,
@@ -38,7 +38,7 @@ func TestUpstream_GetAverageResponseTime(t *testing.T) {
 			fields: fields{
 				Node:             nil,
 				Weight:           1,
-				Load:             0,
+				load:             0,
 				RequestCount:     100,
 				TotalRequestTime: uint64(100 * time.Second),
 				Healthy:          true,
@@ -52,14 +52,14 @@ func TestUpstream_GetAverageResponseTime(t *testing.T) {
 			u := &Upstream{
 				Node:             tt.fields.Node,
 				Weight:           tt.fields.Weight,
-				Load:             tt.fields.Load,
-				RequestCount:     tt.fields.RequestCount,
-				TotalRequestTime: tt.fields.TotalRequestTime,
-				Host:             tt.fields.Host,
-				Healthy:          tt.fields.Healthy,
+				load:             tt.fields.load,
+				requestCount:     tt.fields.RequestCount,
+				totalRequestTime: tt.fields.TotalRequestTime,
+				nodeID:           tt.fields.Host,
+				healthy:          tt.fields.Healthy,
 			}
-			if got := u.GetAverageResponseTime(); got != tt.want {
-				t.Errorf("Upstream.GetAverageResponseTime() = %v, want %v", got, tt.want)
+			if got := u.AverageResponseTime(); got != tt.want {
+				t.Errorf("Upstream.AverageResponseTime() = %v, want %v", got, tt.want)
 			}
 		})
 	}

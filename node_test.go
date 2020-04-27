@@ -13,14 +13,14 @@ func TestUpstream_IsHealthy(t *testing.T) {
 		{
 			name: "healty trivial test",
 			upstream: Upstream{
-				Healthy: true,
+				healthy: true,
 			},
 			want: true,
 		},
 		{
 			name: "healty trivial test",
 			upstream: Upstream{
-				Healthy: false,
+				healthy: false,
 			},
 			want: false,
 		},
@@ -47,7 +47,7 @@ func TestUpstream_IncreaseLoad(t *testing.T) {
 		{
 			name: "IncreaseLoad 1 time",
 			upstream: &Upstream{
-				Host: "127.0.0.1",
+				nodeID: "127.0.0.1",
 			},
 			call: func(u *Upstream) {
 				u.IncreaseLoad()
@@ -59,7 +59,7 @@ func TestUpstream_IncreaseLoad(t *testing.T) {
 		{
 			name: "IncreaseLoad 2 time, decrease 1 time",
 			upstream: &Upstream{
-				Host: "127.0.0.1",
+				nodeID: "127.0.0.1",
 			},
 			call: func(u *Upstream) {
 				u.IncreaseLoad()
@@ -74,7 +74,7 @@ func TestUpstream_IncreaseLoad(t *testing.T) {
 		{
 			name: "Do requests, no load but increased (done) request",
 			upstream: &Upstream{
-				Host: "127.0.0.1",
+				nodeID: "127.0.0.1",
 			},
 			call: func(u *Upstream) {
 				u.DoRequest()
@@ -91,14 +91,14 @@ func TestUpstream_IncreaseLoad(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			u := tt.upstream
 			tt.call(u)
-			if tt.wantLoad != u.GetLoad() {
-				t.Errorf("Upstream.GetLoad() = %v, want %v", u.GetLoad(), tt.wantLoad)
+			if tt.wantLoad != u.Load() {
+				t.Errorf("Upstream.Load() = %v, want %v", u.Load(), tt.wantLoad)
 			}
-			if tt.wantRequestCount != u.GetTotalRequest() {
-				t.Errorf("Upstream.GetTotalRequest() = %v, want %v", u.GetTotalRequest(), tt.wantRequestCount)
+			if tt.wantRequestCount != u.TotalRequest() {
+				t.Errorf("Upstream.TotalRequest() = %v, want %v", u.TotalRequest(), tt.wantRequestCount)
 			}
-			if tt.wantHost != u.GetHost() {
-				t.Errorf("Upstream.GetHost() = %v, want %v", u.GetHost(), tt.wantHost)
+			if tt.wantHost != u.NodeID() {
+				t.Errorf("Upstream.NodeID() = %v, want %v", u.NodeID(), tt.wantHost)
 			}
 		})
 	}

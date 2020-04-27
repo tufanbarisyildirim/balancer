@@ -12,7 +12,7 @@ func (lt *LeastTime) SelectNode(balancer *Balancer, clientID string) Node {
 			continue
 		}
 
-		if selectedNode == nil || selectedNode.GetAverageResponseTime() > upstream.GetAverageResponseTime() {
+		if selectedNode == nil || selectedNode.AverageResponseTime() > upstream.AverageResponseTime() {
 			selectedNode = upstream
 			continue
 		}

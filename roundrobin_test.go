@@ -28,15 +28,15 @@ func TestRoundRobin_SelectNode(t *testing.T) {
 				balancer: &Balancer{
 					UpstreamPool: []Node{
 						&Upstream{
-							Healthy: true,
-							Host:    "127.0.0.2",
+							healthy: true,
+							nodeID:    "127.0.0.2",
 						},
 					},
 				},
 			},
 			want: &Upstream{
-				Healthy: true,
-				Host:    "127.0.0.2",
+				healthy: true,
+				nodeID:    "127.0.0.2",
 			},
 		},
 		{
@@ -60,12 +60,12 @@ func TestRoundRobin_SelectNode(t *testing.T) {
 				balancer: &Balancer{
 					UpstreamPool: []Node{
 						&Upstream{
-							Healthy: false,
-							Host:    "127.0.0.2",
+							healthy: false,
+							nodeID:    "127.0.0.2",
 						},
 						&Upstream{
-							Healthy: false,
-							Host:    "127.0.0.1",
+							healthy: false,
+							nodeID:    "127.0.0.1",
 						},
 					},
 				},

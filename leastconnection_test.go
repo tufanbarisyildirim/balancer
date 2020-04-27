@@ -23,16 +23,16 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 				balancer: &Balancer{
 					UpstreamPool: []Node{
 						&Upstream{
-							Healthy: true,
-							Host:    "127.0.0.1",
+							healthy: true,
+							nodeID:    "127.0.0.1",
 						},
 					},
 				},
 				clientID: "127.0.0.1",
 			},
 			want: &Upstream{
-				Healthy: true,
-				Host:    "127.0.0.1",
+				healthy: true,
+				nodeID:    "127.0.0.1",
 			},
 		},
 		{
@@ -42,23 +42,23 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 				balancer: &Balancer{
 					UpstreamPool: []Node{
 						&Upstream{
-							Healthy: true,
-							Host:    "127.0.0.1",
-							Load:    2,
+							healthy: true,
+							nodeID:    "127.0.0.1",
+							load:    2,
 						},
 						&Upstream{
-							Healthy: true,
-							Host:    "127.0.0.2",
-							Load:    1,
+							healthy: true,
+							nodeID:    "127.0.0.2",
+							load:    1,
 						},
 					},
 				},
 				clientID: "127.0.0.1",
 			},
 			want: &Upstream{
-				Healthy: true,
-				Host:    "127.0.0.2",
-				Load:    1,
+				healthy: true,
+				nodeID:    "127.0.0.2",
+				load:    1,
 			},
 		},
 		{
@@ -68,28 +68,28 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 				balancer: &Balancer{
 					UpstreamPool: []Node{
 						&Upstream{
-							Healthy: true,
-							Host:    "127.0.0.1",
-							Load:    2,
+							healthy: true,
+							nodeID:    "127.0.0.1",
+							load:    2,
 						},
 						&Upstream{
-							Healthy: true,
-							Host:    "127.0.0.2",
-							Load:    1,
+							healthy: true,
+							nodeID:    "127.0.0.2",
+							load:    1,
 						},
 						&Upstream{
-							Healthy: false,
-							Host:    "127.0.0.3",
-							Load:    0,
+							healthy: false,
+							nodeID:    "127.0.0.3",
+							load:    0,
 						},
 					},
 				},
 				clientID: "127.0.0.1",
 			},
 			want: &Upstream{
-				Healthy: true,
-				Host:    "127.0.0.2",
-				Load:    1,
+				healthy: true,
+				nodeID:    "127.0.0.2",
+				load:    1,
 			},
 		},
 		{
@@ -99,19 +99,19 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 				balancer: &Balancer{
 					UpstreamPool: []Node{
 						&Upstream{
-							Healthy: false,
-							Host:    "127.0.0.1",
-							Load:    2,
+							healthy: false,
+							nodeID:    "127.0.0.1",
+							load:    2,
 						},
 						&Upstream{
-							Healthy: false,
-							Host:    "127.0.0.2",
-							Load:    1,
+							healthy: false,
+							nodeID:    "127.0.0.2",
+							load:    1,
 						},
 						&Upstream{
-							Healthy: false,
-							Host:    "127.0.0.3",
-							Load:    0,
+							healthy: false,
+							nodeID:    "127.0.0.3",
+							load:    0,
 						},
 					},
 				},

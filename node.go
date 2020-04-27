@@ -5,8 +5,8 @@ import "time"
 //Node a node that handles load
 type Node interface {
 	IsHealthy() bool
-	GetTotalRequest() uint64
-	GetAverageResponseTime() time.Duration
-	GetLoad() int64
-	GetHost() string
+	TotalRequest() uint64
+	AverageResponseTime() time.Duration
+	Load() int64
+	NodeID() string
 }

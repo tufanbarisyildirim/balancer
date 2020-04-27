@@ -12,7 +12,7 @@ func (lc *LeastConnection) SelectNode(balancer *Balancer, clientID string) Node 
 			continue
 		}
 
-		if selectedNode == nil || selectedNode.GetLoad() > upstream.GetLoad() {
+		if selectedNode == nil || selectedNode.Load() > upstream.Load() {
 			selectedNode = upstream
 			continue
 		}

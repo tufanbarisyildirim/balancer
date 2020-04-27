@@ -22,18 +22,18 @@ Selector is one of selection policies:
 
 - [RoundRobin](roundrobin.go) - selects next available upstream on every request
 - [Hash](hash.go) - matches client using consistant hashing by its own id (any string like ip address or user id)
-- [LeastConnection](leastconnection.go) - selects the node that has lowest active connection (using Node.GetLoad)
-- [LeastTime](leasttime.go) - selects the node that has lowest response time (using Node.GetAverageResponseTime)
+- [LeastConnection](leastconnection.go) - selects the node that has lowest active connection (using Node.Load)
+- [LeastTime](leasttime.go) - selects the node that has lowest response time (using Node.AverageResponseTime)
 
 Any type of object that satisfies Node Interface will work as node
 
 ```go
 type Node interface {
 	IsHealthy() bool
-	GetTotalRequest() uint64
-	GetAverageResponseTime() time.Duration
-	GetLoad() int64
-	GetHost() string
+	TotalRequest() uint64
+	AverageResponseTime() time.Duration
+	Load() int64
+	Host() string
 }
 ```
 
