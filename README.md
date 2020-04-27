@@ -71,8 +71,8 @@ PASS
 ok      github.com/tufanbarisyildirim/balancer  5.009s
 ```
 
-Those results are for 10 upstreams where half of them are down but still in pool. (see balancer_test.go for details)
-I tired to keep mocking as a real example as possible (Increasing current load, load times and kep half of them down all the time). So those results are worst case of finding the best upstream in pool.
+Those results are for 10 upstreams where half of them are down but still in pool. (see [balancer_test.go](balancer_test.go) for details)
+I tried to keep mocking as a real example as possible (Increasing current load, load times and kep half of them down all the time). So those results are worst case of finding the best upstream in pool.
 
 
 ### [Contributing](CONTRIBUTING)
