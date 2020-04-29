@@ -1,5 +1,5 @@
 # Balancer
-Balancing machine that can be plugged anywhere
+Zero allocation Balancing machine that can be plugged anywhere
 
 Balancer helps you to balance jobs/requests/messages between workers.  It is well tested, ready to be used in production under high throughput. 
 
@@ -63,10 +63,10 @@ go test -bench=.
 goos: darwin
 goarch: amd64
 pkg: github.com/tufanbarisyildirim/balancer
-BenchmarkNextRoundRobin-16              19228345                55.7 ns/op
-BenchmarkNextHash-16                    13213717                84.9 ns/op
-BenchmarkNextLeastConnection-16         20430045                57.4 ns/op
-BenchmarkNextLeastTime-16               11797078                97.7 ns/op
+BenchmarkNextRoundRobin-16              19688180                52.7 ns/op             0 B/op          0 allocs/op
+BenchmarkNextHash-16                    32723619                33.9 ns/op             0 B/op          0 allocs/op
+BenchmarkNextLeastConnection-16         17938972                59.0 ns/op             0 B/op          0 allocs/op
+BenchmarkNextLeastTime-16               11803462                98.3 ns/op             0 B/op          0 allocs/op
 PASS
 ok      github.com/tufanbarisyildirim/balancer  5.009s
 ```

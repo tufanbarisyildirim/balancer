@@ -5,7 +5,7 @@ test:
 	go test -race -cover ${PWD}
 
 bench:
-	go test -bench=.
+	go test -bench=. -benchmem
 	
 fmt:
 	find . -name "*.go" | xargs gofmt -w -s

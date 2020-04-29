@@ -1,9 +1,5 @@
 package balancer
 
-import (
-	"hash/fnv"
-)
-
 //Hash jump to a node using consistent hash
 type Hash struct {
 }
@@ -27,8 +23,14 @@ func (h *Hash) SelectNode(balancer *Balancer, clientID string) Node {
 }
 
 // findIndex finds consistant index using golang fast hash
+// https://github.com/golang/go/blob/master/src/hash/fnv/fnv.go#L100 the code we previously  used
+// has some allocations
+// we need minimum footprint per deciding
 func findIndex(s string, poolSize uint32) uint32 {
-	hasher := fnv.New32a()
-	hasher.Write([]byte(s))
-	return hasher.Sum32() % poolSize
+	var h32a uint32 = 2166136261
+	for _, c := range []byte(s) {
+		h32a *= 16777619
+		h32a ^= uint32(c)
+	}
+	return h32a % poolSize
 }
