@@ -422,6 +422,29 @@ func BenchmarkNextRoundRobin(b *testing.B) {
 	}
 }
 
+
+//BenchmarkNextRoundRobinChannel benchmark roundrobin algorithm using go channels
+func BenchmarkNextRoundRobinChannel(b *testing.B) {
+
+	balancer := Balancer{
+		UpstreamPool: genNodes(),
+		load:         0,
+		Policy:       &RoundRobinChannel{},
+		m:            &sync.RWMutex{},
+	}
+
+	for n := 0; n < b.N; n++ {
+		us:=balancer.Next("127.0.0.1")
+		if us == nil{
+			continue
+		}
+		upstream := us.(*Upstream)
+		if n%50 == 0 {
+			upstream.IncreaseLoad()
+		}
+	}
+}
+
 //BenchmarkNextHash consistant hashing
 func BenchmarkNextHash(b *testing.B) {
 
