@@ -25,7 +25,7 @@ func TestLeastTime_SelectNode(t *testing.T) {
 					UpstreamPool: []Node{
 						&Upstream{
 							healthy: true,
-							nodeID:    "127.0.0.1",
+							nodeID:  "127.0.0.1",
 						},
 					},
 				},
@@ -33,7 +33,7 @@ func TestLeastTime_SelectNode(t *testing.T) {
 			},
 			want: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.1",
+				nodeID:  "127.0.0.1",
 			},
 		},
 		{
@@ -44,14 +44,14 @@ func TestLeastTime_SelectNode(t *testing.T) {
 					UpstreamPool: []Node{
 						&Upstream{
 							healthy:          true,
-							nodeID:             "127.0.0.1",
+							nodeID:           "127.0.0.1",
 							load:             2,
 							requestCount:     1000,
 							totalRequestTime: uint64(time.Second * 10),
 						},
 						&Upstream{
 							healthy:          true,
-							nodeID:             "127.0.0.2",
+							nodeID:           "127.0.0.2",
 							load:             1,
 							requestCount:     1000,
 							totalRequestTime: uint64(time.Second * 5),
@@ -62,7 +62,7 @@ func TestLeastTime_SelectNode(t *testing.T) {
 			},
 			want: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.2",
+				nodeID:           "127.0.0.2",
 				load:             1,
 				requestCount:     1000,
 				totalRequestTime: uint64(time.Second * 5),
@@ -76,21 +76,21 @@ func TestLeastTime_SelectNode(t *testing.T) {
 					UpstreamPool: []Node{
 						&Upstream{
 							healthy:          true,
-							nodeID:             "127.0.0.1",
+							nodeID:           "127.0.0.1",
 							load:             2,
 							requestCount:     5000,
 							totalRequestTime: uint64(time.Second * 5),
 						},
 						&Upstream{
 							healthy:          true,
-							nodeID:             "127.0.0.2",
+							nodeID:           "127.0.0.2",
 							load:             1,
 							requestCount:     5000,
 							totalRequestTime: uint64(time.Second * 4),
 						},
 						&Upstream{
 							healthy:          false,
-							nodeID:             "127.0.0.3",
+							nodeID:           "127.0.0.3",
 							load:             0,
 							requestCount:     5000,
 							totalRequestTime: 100,
@@ -101,7 +101,7 @@ func TestLeastTime_SelectNode(t *testing.T) {
 			},
 			want: &Upstream{
 				healthy:          true,
-				nodeID:             "127.0.0.2",
+				nodeID:           "127.0.0.2",
 				load:             1,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 4),
@@ -115,21 +115,21 @@ func TestLeastTime_SelectNode(t *testing.T) {
 					UpstreamPool: []Node{
 						&Upstream{
 							healthy:          false,
-							nodeID:             "127.0.0.1",
+							nodeID:           "127.0.0.1",
 							load:             2,
 							requestCount:     5000,
 							totalRequestTime: uint64(time.Second * 5),
 						},
 						&Upstream{
 							healthy:          false,
-							nodeID:             "127.0.0.2",
+							nodeID:           "127.0.0.2",
 							load:             1,
 							requestCount:     5000,
 							totalRequestTime: uint64(time.Second * 4),
 						},
 						&Upstream{
 							healthy:          false,
-							nodeID:             "127.0.0.3",
+							nodeID:           "127.0.0.3",
 							load:             0,
 							requestCount:     5000,
 							totalRequestTime: 100,

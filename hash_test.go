@@ -23,14 +23,14 @@ func TestHash_SelectNode(t *testing.T) {
 				balancer: &Balancer{
 					UpstreamPool: []Node{
 						&Upstream{
-							nodeID:    "127.0.0.1",
+							nodeID:  "127.0.0.1",
 							healthy: true,
 						},
 					},
 				},
 			},
 			want: &Upstream{
-				nodeID:    "127.0.0.1",
+				nodeID:  "127.0.0.1",
 				healthy: true,
 			},
 		},

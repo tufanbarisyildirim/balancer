@@ -29,14 +29,14 @@ func TestRoundRobin_SelectNode(t *testing.T) {
 					UpstreamPool: []Node{
 						&Upstream{
 							healthy: true,
-							nodeID:    "127.0.0.2",
+							nodeID:  "127.0.0.2",
 						},
 					},
 				},
 			},
 			want: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.2",
+				nodeID:  "127.0.0.2",
 			},
 		},
 		{
@@ -61,11 +61,11 @@ func TestRoundRobin_SelectNode(t *testing.T) {
 					UpstreamPool: []Node{
 						&Upstream{
 							healthy: false,
-							nodeID:    "127.0.0.2",
+							nodeID:  "127.0.0.2",
 						},
 						&Upstream{
 							healthy: false,
-							nodeID:    "127.0.0.1",
+							nodeID:  "127.0.0.1",
 						},
 					},
 				},

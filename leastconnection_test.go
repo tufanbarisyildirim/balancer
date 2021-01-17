@@ -24,7 +24,7 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 					UpstreamPool: []Node{
 						&Upstream{
 							healthy: true,
-							nodeID:    "127.0.0.1",
+							nodeID:  "127.0.0.1",
 						},
 					},
 				},
@@ -32,7 +32,7 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 			},
 			want: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.1",
+				nodeID:  "127.0.0.1",
 			},
 		},
 		{
@@ -43,12 +43,12 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 					UpstreamPool: []Node{
 						&Upstream{
 							healthy: true,
-							nodeID:    "127.0.0.1",
+							nodeID:  "127.0.0.1",
 							load:    2,
 						},
 						&Upstream{
 							healthy: true,
-							nodeID:    "127.0.0.2",
+							nodeID:  "127.0.0.2",
 							load:    1,
 						},
 					},
@@ -57,7 +57,7 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 			},
 			want: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.2",
+				nodeID:  "127.0.0.2",
 				load:    1,
 			},
 		},
@@ -69,17 +69,17 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 					UpstreamPool: []Node{
 						&Upstream{
 							healthy: true,
-							nodeID:    "127.0.0.1",
+							nodeID:  "127.0.0.1",
 							load:    2,
 						},
 						&Upstream{
 							healthy: true,
-							nodeID:    "127.0.0.2",
+							nodeID:  "127.0.0.2",
 							load:    1,
 						},
 						&Upstream{
 							healthy: false,
-							nodeID:    "127.0.0.3",
+							nodeID:  "127.0.0.3",
 							load:    0,
 						},
 					},
@@ -88,7 +88,7 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 			},
 			want: &Upstream{
 				healthy: true,
-				nodeID:    "127.0.0.2",
+				nodeID:  "127.0.0.2",
 				load:    1,
 			},
 		},
@@ -100,17 +100,17 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 					UpstreamPool: []Node{
 						&Upstream{
 							healthy: false,
-							nodeID:    "127.0.0.1",
+							nodeID:  "127.0.0.1",
 							load:    2,
 						},
 						&Upstream{
 							healthy: false,
-							nodeID:    "127.0.0.2",
+							nodeID:  "127.0.0.2",
 							load:    1,
 						},
 						&Upstream{
 							healthy: false,
-							nodeID:    "127.0.0.3",
+							nodeID:  "127.0.0.3",
 							load:    0,
 						},
 					},
