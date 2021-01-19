@@ -5,7 +5,7 @@ import (
 	"time"
 )
 
-func TestUpstream_AverageResponseTime(t *testing.T) {
+func TestMockNode_AverageResponseTime(t *testing.T) {
 	type fields struct {
 		Node             Node
 		Weight           int
@@ -49,7 +49,7 @@ func TestUpstream_AverageResponseTime(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u := &Upstream{
+			u := &MockNode{
 				Node:             tt.fields.Node,
 				Weight:           tt.fields.Weight,
 				load:             tt.fields.load,
@@ -59,7 +59,7 @@ func TestUpstream_AverageResponseTime(t *testing.T) {
 				healthy:          tt.fields.Healthy,
 			}
 			if got := u.AverageResponseTime(); got != tt.want {
-				t.Errorf("Upstream.AverageResponseTime() = %v, want %v", got, tt.want)
+				t.Errorf("MockNode.AverageResponseTime() = %v, want %v", got, tt.want)
 			}
 		})
 	}

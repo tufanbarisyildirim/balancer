@@ -22,7 +22,7 @@ func (h *Hash) SelectNode(balancer *Balancer, clientID string) Node {
 	return nil
 }
 
-// findIndex finds consistant index using golang fast hash
+// findIndex finds consistent index using golang fast hash
 // https://github.com/golang/go/blob/master/src/hash/fnv/fnv.go#L100 the code we previously  used
 // has some allocations
 // we need minimum footprint per deciding

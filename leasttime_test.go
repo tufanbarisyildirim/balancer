@@ -23,7 +23,7 @@ func TestLeastTime_SelectNode(t *testing.T) {
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy: true,
 							nodeID:  "127.0.0.1",
 						},
@@ -31,7 +31,7 @@ func TestLeastTime_SelectNode(t *testing.T) {
 				},
 				clientID: "127.0.0.1",
 			},
-			want: &Upstream{
+			want: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.1",
 			},
@@ -42,14 +42,14 @@ func TestLeastTime_SelectNode(t *testing.T) {
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy:          true,
 							nodeID:           "127.0.0.1",
 							load:             2,
 							requestCount:     1000,
 							totalRequestTime: uint64(time.Second * 10),
 						},
-						&Upstream{
+						&MockNode{
 							healthy:          true,
 							nodeID:           "127.0.0.2",
 							load:             1,
@@ -60,7 +60,7 @@ func TestLeastTime_SelectNode(t *testing.T) {
 				},
 				clientID: "127.0.0.1",
 			},
-			want: &Upstream{
+			want: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.2",
 				load:             1,
@@ -74,21 +74,21 @@ func TestLeastTime_SelectNode(t *testing.T) {
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy:          true,
 							nodeID:           "127.0.0.1",
 							load:             2,
 							requestCount:     5000,
 							totalRequestTime: uint64(time.Second * 5),
 						},
-						&Upstream{
+						&MockNode{
 							healthy:          true,
 							nodeID:           "127.0.0.2",
 							load:             1,
 							requestCount:     5000,
 							totalRequestTime: uint64(time.Second * 4),
 						},
-						&Upstream{
+						&MockNode{
 							healthy:          false,
 							nodeID:           "127.0.0.3",
 							load:             0,
@@ -99,7 +99,7 @@ func TestLeastTime_SelectNode(t *testing.T) {
 				},
 				clientID: "127.0.0.1",
 			},
-			want: &Upstream{
+			want: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.2",
 				load:             1,
@@ -113,21 +113,21 @@ func TestLeastTime_SelectNode(t *testing.T) {
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy:          false,
 							nodeID:           "127.0.0.1",
 							load:             2,
 							requestCount:     5000,
 							totalRequestTime: uint64(time.Second * 5),
 						},
-						&Upstream{
+						&MockNode{
 							healthy:          false,
 							nodeID:           "127.0.0.2",
 							load:             1,
 							requestCount:     5000,
 							totalRequestTime: uint64(time.Second * 4),
 						},
-						&Upstream{
+						&MockNode{
 							healthy:          false,
 							nodeID:           "127.0.0.3",
 							load:             0,

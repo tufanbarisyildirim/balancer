@@ -27,7 +27,7 @@ func TestBalancer_Add(t *testing.T) {
 			name: "add 1 node",
 			fields: fields{
 				UpstreamPool: []Node{
-					&Upstream{
+					&MockNode{
 						healthy: true,
 						nodeID:  "127.0.0.1:8000",
 					},
@@ -39,11 +39,11 @@ func TestBalancer_Add(t *testing.T) {
 			name: "add 2 node",
 			fields: fields{
 				UpstreamPool: []Node{
-					&Upstream{
+					&MockNode{
 						healthy: true,
 						nodeID:  "127.0.0.1:8000",
 					},
-					&Upstream{
+					&MockNode{
 						healthy: true,
 						nodeID:  "127.0.0.2:8000",
 					},
@@ -91,19 +91,19 @@ func TestBalancer_Next(t *testing.T) {
 			name: "roundrobin next test",
 			fields: fields{
 				UpstreamPool: []Node{
-					&Upstream{
+					&MockNode{
 						healthy: false,
 						nodeID:  "127.0.0.1",
 					},
-					&Upstream{
+					&MockNode{
 						healthy: true,
 						nodeID:  "127.0.0.2",
 					},
-					&Upstream{
+					&MockNode{
 						healthy: true,
 						nodeID:  "127.0.0.3",
 					},
-					&Upstream{
+					&MockNode{
 						healthy: true,
 						nodeID:  "127.0.0.4",
 					},
@@ -111,23 +111,23 @@ func TestBalancer_Next(t *testing.T) {
 				load:     0,
 				selector: SelectionPolicy(&RoundRobin{}),
 			},
-			want1: &Upstream{
+			want1: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 			},
-			want2: &Upstream{
+			want2: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.3",
 			},
-			want3: &Upstream{
+			want3: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.4",
 			},
-			want4: &Upstream{
+			want4: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 			},
-			want5: &Upstream{
+			want5: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.3",
 			},
@@ -136,22 +136,22 @@ func TestBalancer_Next(t *testing.T) {
 			name: "leastconnection next test",
 			fields: fields{
 				UpstreamPool: []Node{
-					&Upstream{
+					&MockNode{
 						healthy: false,
 						nodeID:  "127.0.0.1",
 						load:    0,
 					},
-					&Upstream{
+					&MockNode{
 						healthy: true,
 						nodeID:  "127.0.0.2",
 						load:    1,
 					},
-					&Upstream{
+					&MockNode{
 						healthy: true,
 						nodeID:  "127.0.0.3",
 						load:    2,
 					},
-					&Upstream{
+					&MockNode{
 						healthy: true,
 						nodeID:  "127.0.0.4",
 						load:    3,
@@ -160,27 +160,27 @@ func TestBalancer_Next(t *testing.T) {
 				load:     0,
 				selector: SelectionPolicy(&LeastConnection{}),
 			},
-			want1: &Upstream{
+			want1: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 				load:    1,
 			},
-			want2: &Upstream{
+			want2: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 				load:    1,
 			},
-			want3: &Upstream{
+			want3: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 				load:    1,
 			},
-			want4: &Upstream{
+			want4: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 				load:    1,
 			},
-			want5: &Upstream{
+			want5: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 				load:    1,
@@ -190,26 +190,26 @@ func TestBalancer_Next(t *testing.T) {
 			name: "leasttimeconnection next test",
 			fields: fields{
 				UpstreamPool: []Node{
-					&Upstream{
+					&MockNode{
 						healthy: false,
 						nodeID:  "127.0.0.1",
 						load:    0,
 					},
-					&Upstream{
+					&MockNode{
 						healthy:          true,
 						nodeID:           "127.0.0.2",
 						load:             1,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 10),
 					},
-					&Upstream{
+					&MockNode{
 						healthy:          true,
 						nodeID:           "127.0.0.3",
 						load:             2,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 10),
 					},
-					&Upstream{
+					&MockNode{
 						healthy:          true,
 						nodeID:           "127.0.0.4",
 						load:             3,
@@ -220,35 +220,35 @@ func TestBalancer_Next(t *testing.T) {
 				load:     0,
 				selector: SelectionPolicy(&LeastTime{}),
 			},
-			want1: &Upstream{
+			want1: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
-			want2: &Upstream{
+			want2: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
-			want3: &Upstream{
+			want3: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
-			want4: &Upstream{
+			want4: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
-			want5: &Upstream{
+			want5: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.4",
 				load:             3,
@@ -286,35 +286,35 @@ func TestBalancer_Next(t *testing.T) {
 			name: "hash next test",
 			fields: fields{
 				UpstreamPool: []Node{
-					&Upstream{
+					&MockNode{
 						healthy:          true,
 						nodeID:           "127.0.0.4",
 						load:             3,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 5),
 					},
-					&Upstream{
+					&MockNode{
 						healthy:          false,
 						nodeID:           "127.0.0.3",
 						load:             2,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 10),
 					},
-					&Upstream{
+					&MockNode{
 						healthy:          false,
 						nodeID:           "127.0.0.1",
 						load:             0,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 10),
 					},
-					&Upstream{
+					&MockNode{
 						healthy:          true,
 						nodeID:           "127.0.0.2",
 						load:             1,
 						requestCount:     5000,
 						totalRequestTime: uint64(time.Second * 10),
 					},
-					&Upstream{
+					&MockNode{
 						healthy:          true,
 						nodeID:           "127.0.0.4",
 						load:             3,
@@ -325,35 +325,35 @@ func TestBalancer_Next(t *testing.T) {
 				load:     0,
 				selector: SelectionPolicy(&Hash{}),
 			},
-			want1: &Upstream{
+			want1: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
-			want2: &Upstream{
+			want2: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
-			want3: &Upstream{
+			want3: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
-			want4: &Upstream{
+			want4: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.4",
 				load:             3,
 				requestCount:     5000,
 				totalRequestTime: uint64(time.Second * 5),
 			},
-			want5: &Upstream{
+			want5: &MockNode{
 				healthy:          true,
 				nodeID:           "127.0.0.4",
 				load:             3,
@@ -392,7 +392,7 @@ func TestBalancer_Next(t *testing.T) {
 func genNodes() []Node {
 	nodes := make([]Node, 0)
 	for i := 0; i < 10; i++ {
-		nodes = append(nodes, &Upstream{
+		nodes = append(nodes, &MockNode{
 			Weight:           1,
 			nodeID:           fmt.Sprintf("127.0.0.%d:8080", i),
 			healthy:          i%2 == 0,
@@ -415,7 +415,7 @@ func BenchmarkNextRoundRobin(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		upstream := balancer.Next("127.0.0.1").(*Upstream)
+		upstream := balancer.Next("127.0.0.1").(*MockNode)
 		if n%50 == 0 {
 			upstream.IncreaseLoad()
 		}
@@ -438,7 +438,7 @@ func BenchmarkNextRoundRobinChannel(b *testing.B) {
 		if us == nil{
 			continue
 		}
-		upstream := us.(*Upstream)
+		upstream := us.(*MockNode)
 		if n%50 == 0 {
 			upstream.IncreaseLoad()
 		}
@@ -456,7 +456,7 @@ func BenchmarkNextHash(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		upstream := balancer.Next("127.0.0.1").(*Upstream)
+		upstream := balancer.Next("127.0.0.1").(*MockNode)
 		if n%50 == 0 {
 			upstream.IncreaseLoad()
 		}
@@ -474,7 +474,7 @@ func BenchmarkNextLeastConnection(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		upstream := balancer.Next("127.0.0.1").(*Upstream)
+		upstream := balancer.Next("127.0.0.1").(*MockNode)
 		if n%50 == 0 {
 			upstream.IncreaseLoad()
 		}
@@ -492,7 +492,7 @@ func BenchmarkNextLeastTime(b *testing.B) {
 	}
 
 	for n := 0; n < b.N; n++ {
-		upstream := balancer.Next("127.0.0.1").(*Upstream)
+		upstream := balancer.Next("127.0.0.1").(*MockNode)
 		if n%5 == 0 {
 			upstream.IncreaseTime()
 		}
@@ -519,8 +519,8 @@ func TestBalancer_Remove(t *testing.T) {
 			name: "remove one",
 			fields: fields{
 				UpstreamPool: []Node{
-					&Upstream{nodeID: "1"},
-					&Upstream{nodeID: "2"},
+					&MockNode{nodeID: "1"},
+					&MockNode{nodeID: "2"},
 				},
 				m: &sync.RWMutex{},
 			},
@@ -533,9 +533,9 @@ func TestBalancer_Remove(t *testing.T) {
 			name: "remove one",
 			fields: fields{
 				UpstreamPool: []Node{
-					&Upstream{nodeID: "1"},
-					&Upstream{nodeID: "2"},
-					&Upstream{nodeID: "3"},
+					&MockNode{nodeID: "1"},
+					&MockNode{nodeID: "2"},
+					&MockNode{nodeID: "3"},
 				},
 				m: &sync.RWMutex{},
 			},

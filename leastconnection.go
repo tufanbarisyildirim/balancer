@@ -12,7 +12,7 @@ func (lc *LeastConnection) SelectNode(balancer *Balancer, clientID string) Node 
 	var selectedNode Node
 
 	for _, upstream := range balancer.UpstreamPool {
-		if !upstream.IsHealthy() { //no one needs unhealth nodes.
+		if !upstream.IsHealthy() { //no one needs unhealthy nodes.
 			continue
 		}
 

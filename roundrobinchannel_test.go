@@ -6,44 +6,34 @@ import (
 )
 
 func TestRoundRobinChannel_SelectNode(t *testing.T) {
-	type fields struct {
-		robin uint32
-	}
 	type args struct {
 		balancer *Balancer
 		clientID string
 	}
 	tests := []struct {
 		name   string
-		fields fields
 		args   args
 		want   Node
 	}{
 		{
 			name: "first and only comes",
-			fields: fields{
-				robin: 0, //to get first node
-			},
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy: true,
 							nodeID:  "127.0.0.2",
 						},
 					},
 				},
 			},
-			want: &Upstream{
+			want: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 			},
 		},
 		{
 			name: "nil comes when no upstream",
-			fields: fields{
-				robin: 0, //to get first node
-			},
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{},
@@ -52,18 +42,15 @@ func TestRoundRobinChannel_SelectNode(t *testing.T) {
 			want: nil,
 		},
 		{
-			name: "nil comes when no healty upstream",
-			fields: fields{
-				robin: 0, //to get first node
-			},
+			name: "nil comes when no healthy upstream",
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy: false,
 							nodeID:  "127.0.0.2",
 						},
-						&Upstream{
+						&MockNode{
 							healthy: false,
 							nodeID:  "127.0.0.1",
 						},

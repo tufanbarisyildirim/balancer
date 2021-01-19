@@ -38,7 +38,7 @@ func (rc *RoundRobinChannel) SelectNode(balancer *Balancer, clientID string) Nod
 			if n.IsHealthy() {
 				return n
 			}
-		case <-time.After(time.Millisecond * 2):
+		case <-time.After(time.Millisecond * 2): //empty queue? wait 2ms
 			goto goon
 		}
 

@@ -22,7 +22,7 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy: true,
 							nodeID:  "127.0.0.1",
 						},
@@ -30,23 +30,23 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 				},
 				clientID: "127.0.0.1",
 			},
-			want: &Upstream{
+			want: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.1",
 			},
 		},
 		{
-			name: "select the one that heav least connection",
+			name: "select the one that have least connection",
 			lc:   &LeastConnection{},
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy: true,
 							nodeID:  "127.0.0.1",
 							load:    2,
 						},
-						&Upstream{
+						&MockNode{
 							healthy: true,
 							nodeID:  "127.0.0.2",
 							load:    1,
@@ -55,29 +55,29 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 				},
 				clientID: "127.0.0.1",
 			},
-			want: &Upstream{
+			want: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 				load:    1,
 			},
 		},
 		{
-			name: "select the one that heav least connection and healthy",
+			name: "select the one that have least connection and healthy",
 			lc:   &LeastConnection{},
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy: true,
 							nodeID:  "127.0.0.1",
 							load:    2,
 						},
-						&Upstream{
+						&MockNode{
 							healthy: true,
 							nodeID:  "127.0.0.2",
 							load:    1,
 						},
-						&Upstream{
+						&MockNode{
 							healthy: false,
 							nodeID:  "127.0.0.3",
 							load:    0,
@@ -86,7 +86,7 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 				},
 				clientID: "127.0.0.1",
 			},
-			want: &Upstream{
+			want: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 				load:    1,
@@ -98,17 +98,17 @@ func TestLeastConnection_SelectNode(t *testing.T) {
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy: false,
 							nodeID:  "127.0.0.1",
 							load:    2,
 						},
-						&Upstream{
+						&MockNode{
 							healthy: false,
 							nodeID:  "127.0.0.2",
 							load:    1,
 						},
-						&Upstream{
+						&MockNode{
 							healthy: false,
 							nodeID:  "127.0.0.3",
 							load:    0,

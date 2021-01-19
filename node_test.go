@@ -7,19 +7,19 @@ import (
 func TestUpstream_IsHealthy(t *testing.T) {
 	tests := []struct {
 		name     string
-		upstream Upstream
+		upstream MockNode
 		want     bool
 	}{
 		{
 			name: "healty trivial test",
-			upstream: Upstream{
+			upstream: MockNode{
 				healthy: true,
 			},
 			want: true,
 		},
 		{
 			name: "healty trivial test",
-			upstream: Upstream{
+			upstream: MockNode{
 				healthy: false,
 			},
 			want: false,
@@ -29,7 +29,7 @@ func TestUpstream_IsHealthy(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			u := tt.upstream
 			if got := u.IsHealthy(); got != tt.want {
-				t.Errorf("Upstream.IsHealthy() = %v, want %v", got, tt.want)
+				t.Errorf("MockNode.IsHealthy() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -38,18 +38,18 @@ func TestUpstream_IsHealthy(t *testing.T) {
 func TestUpstream_IncreaseLoad(t *testing.T) {
 	tests := []struct {
 		name             string
-		upstream         *Upstream
-		call             func(u *Upstream)
+		upstream         *MockNode
+		call             func(u *MockNode)
 		wantRequestCount uint64
 		wantLoad         int64
 		wantHost         string
 	}{
 		{
 			name: "IncreaseLoad 1 time",
-			upstream: &Upstream{
+			upstream: &MockNode{
 				nodeID: "127.0.0.1",
 			},
-			call: func(u *Upstream) {
+			call: func(u *MockNode) {
 				u.IncreaseLoad()
 			},
 			wantRequestCount: uint64(1),
@@ -58,10 +58,10 @@ func TestUpstream_IncreaseLoad(t *testing.T) {
 		},
 		{
 			name: "IncreaseLoad 2 time, decrease 1 time",
-			upstream: &Upstream{
+			upstream: &MockNode{
 				nodeID: "127.0.0.1",
 			},
-			call: func(u *Upstream) {
+			call: func(u *MockNode) {
 				u.IncreaseLoad()
 				u.IncreaseLoad()
 				u.DecreaseLoad()
@@ -73,10 +73,10 @@ func TestUpstream_IncreaseLoad(t *testing.T) {
 
 		{
 			name: "Do requests, no load but increased (done) request",
-			upstream: &Upstream{
+			upstream: &MockNode{
 				nodeID: "127.0.0.1",
 			},
-			call: func(u *Upstream) {
+			call: func(u *MockNode) {
 				u.DoRequest()
 				u.DoRequest()
 				u.DoRequest()
@@ -92,13 +92,13 @@ func TestUpstream_IncreaseLoad(t *testing.T) {
 			u := tt.upstream
 			tt.call(u)
 			if tt.wantLoad != u.Load() {
-				t.Errorf("Upstream.Load() = %v, want %v", u.Load(), tt.wantLoad)
+				t.Errorf("MockNode.Load() = %v, want %v", u.Load(), tt.wantLoad)
 			}
 			if tt.wantRequestCount != u.TotalRequest() {
-				t.Errorf("Upstream.TotalRequest() = %v, want %v", u.TotalRequest(), tt.wantRequestCount)
+				t.Errorf("MockNode.TotalRequest() = %v, want %v", u.TotalRequest(), tt.wantRequestCount)
 			}
 			if tt.wantHost != u.NodeID() {
-				t.Errorf("Upstream.NodeID() = %v, want %v", u.NodeID(), tt.wantHost)
+				t.Errorf("MockNode.NodeID() = %v, want %v", u.NodeID(), tt.wantHost)
 			}
 		})
 	}

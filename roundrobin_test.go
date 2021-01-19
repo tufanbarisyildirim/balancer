@@ -27,14 +27,14 @@ func TestRoundRobin_SelectNode(t *testing.T) {
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy: true,
 							nodeID:  "127.0.0.2",
 						},
 					},
 				},
 			},
-			want: &Upstream{
+			want: &MockNode{
 				healthy: true,
 				nodeID:  "127.0.0.2",
 			},
@@ -59,11 +59,11 @@ func TestRoundRobin_SelectNode(t *testing.T) {
 			args: args{
 				balancer: &Balancer{
 					UpstreamPool: []Node{
-						&Upstream{
+						&MockNode{
 							healthy: false,
 							nodeID:  "127.0.0.2",
 						},
-						&Upstream{
+						&MockNode{
 							healthy: false,
 							nodeID:  "127.0.0.1",
 						},
